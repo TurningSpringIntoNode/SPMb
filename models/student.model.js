@@ -60,7 +60,7 @@ StudentSchema.methods.toJSON = function () {
 };
 
 StudentSchema.statics.findByToken = function (token) {
-  const Students = this;
+  const Student = this;
   
   let decodedStudent = null;
 
@@ -70,15 +70,13 @@ StudentSchema.statics.findByToken = function (token) {
     return Promise.reject();
   }
 
-  return Students.findOne({
+  return Student.findOne({
     '_id': decodedStudent.id,
     'tokens.token': token
   });
 };
 
 StudentSchema.statics.findOrCreate = function (student, cb) {
-
-  console.log('find or create ', student);
 
   const Student = this;
 
@@ -91,12 +89,12 @@ StudentSchema.statics.findOrCreate = function (student, cb) {
       newStudent
       .save()
       .then(student => cb(null, student))
-      .catch(err => cb(err, null));
+      .catch(err => cb(err));
     } else {
       cb(null, savedStudent);
     }
   })
-  .catch(err => cb(err, null));
+  .catch(err => cb(err));
 };  
 
 const Student = mongoose.model('Student', StudentSchema);
