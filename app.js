@@ -2,8 +2,12 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
+const mongoose = require('mongoose');
+const keys = require('./config/keys');
 
 require('./config/passport-setup');
+
+mongoose.connect(keys.mongo.uri);
 
 const authRoutes = require('./routes/auth.route');
 

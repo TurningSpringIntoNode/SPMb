@@ -6,8 +6,9 @@ router.post('/google', passport.authenticate('google-token', {session: false}), 
   if(!req.user){
     return res.status(401).send('User not authorized');
   }
-  console.log(req.user);
-  res.send('OK');
+  req.user
+  .generateAuthToken()
+  .then(token => res.send({token}))
 });
 
 module.exports = router;
