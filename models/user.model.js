@@ -15,7 +15,10 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         unique: true
-    }
+    },
+    roles: [{
+        
+    }]
 });
 
 UserSchema.methods.generateAuthToken = function () {
