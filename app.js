@@ -12,6 +12,7 @@ mongoose.connect(keys.mongo.uri, { useNewUrlParser: true });
 mongoose.Promise = global.Promise;
 
 const authRoutes = require('./routes/auth.route');
+const studentsRoutes = require('./routes/students.route');
 
 const app = express();
 
@@ -21,5 +22,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/auth', authRoutes);
+app.use('/students', studentsRoutes);
 
 module.exports = app;

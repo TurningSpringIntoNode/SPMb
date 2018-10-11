@@ -40,9 +40,8 @@ StudentSchema.methods.generateAuthToken = function () {
 StudentSchema.methods.toJSON = function () {
   const student = this;
   return {
-    name: student.name,
+    name: student.user.name,
     registration: student.registration,
-    email: student.email,
     curricularGrade: student.curricularGrade,
     disciplines: student.disciplines
   }

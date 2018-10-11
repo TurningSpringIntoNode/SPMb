@@ -1,17 +1,19 @@
 const User = require('../models/user.model');
 
 const auth = (req, res, next) => {
-    const token = req.header('x-auth');
+  const token = req.header('x-auth');
 
-    User.findByToken(token).then(user => {
-        if(!user){
-            return Promise.reject();
-        }
-        req.user = user;
-        next();
+  console.log(token);
+
+  User.findByToken(token).then(user => {
+      if (!user) {
+        return Promise.reject();
+      }
+      req.user = user;
+      next();
     })
     .catch(e => {
-        res.status(401).send();
+      res.status(401).send();
     });
 };
 
