@@ -30,11 +30,18 @@ const UserSchema = new Schema({
     }
 });
 
+UserSchema.methods.getRole = function () {
+    const user = this;
+
+    return user.roles.student ? 'Student' : 'Coordinator';
+};
+
 UserSchema.methods.generateAuthToken = function () {
     const user = this;
     
     const token = jwt.sign({
-        id: user._id.toHexString()
+        id: user._id.toHexString(),
+        role: user.getRole()
     }, keys.jwt.secret, {
         expiresIn: '12h'
     }).toString();
@@ -82,7 +89,11 @@ UserSchema.statics.findByToken = function (token) {
         return Promise.reject();
     }
 
-    return User.findById(decodedUser.id);
+    return User.find(decodedUser.id).then(user => {
+        if(user.getRole() !== decodedUser.role)
+            return Promise.reject()
+        return user;
+    });
 };
 
 UserSchema.statics.findOrCreate = function (user) {
