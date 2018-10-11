@@ -19,7 +19,8 @@ const StudentSchema = new Schema({
     enum: ['NEW', 'OLD']
   },
   disciplines: [{
-    type: String
+    type: Schema.Types.ObjectId,
+    ref: 'Discipline'
   }]
 });
 

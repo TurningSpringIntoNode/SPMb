@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const SubjectSchema = new Schema({
+const DisciplineSchema = new Schema({
   id: {
     type: String,
     required: true
@@ -19,9 +19,13 @@ const SubjectSchema = new Schema({
   curricularType: {
     type: String,
     enum: ['REQUIRED', 'OPTIONAL']
-  }
+  },
+  students: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Student'
+  }]
 });
 
-const Subject = mongoose.model('Subject', SubjectSchema);
+const Discipline = mongoose.model('Discipline', DisciplineSchema);
 
-module.exports = Subject;
+module.exports = Discipline;
