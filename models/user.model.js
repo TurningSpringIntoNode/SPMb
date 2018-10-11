@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
-const keys = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const keys = require('../config/keys');
 
 const UserSchema = new Schema({
     name: {
@@ -45,6 +46,22 @@ UserSchema.statics.findByToken = function (token) {
     }
 
     return User.findById(decodedUser.id);
+};
+
+UserSchema.statics.findOrCreate = function (user) {
+    const User = this;
+
+    return User.findOne({
+        googleID: user.googleID
+    })
+    .then(savedUser => {
+        if(!savedUser){
+            const newUser = new User(user);
+            return newUser.save()
+        } else {
+            return savedUser;
+        }
+    });
 };
 
 const User = mongoose.model('User', UserSchema);

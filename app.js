@@ -7,7 +7,7 @@ const keys = require('./config/keys');
 
 require('./config/passport-setup');
 
-mongoose.connect(keys.mongo.uri);
+mongoose.connect(keys.mongo.uri, { useNewUrlParser: true });
 
 const authRoutes = require('./routes/auth.route');
 

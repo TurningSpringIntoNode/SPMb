@@ -1,8 +1,7 @@
 const passport = require('passport');
 const GoogleTokenStrategy = require('passport-google-token').Strategy;
 const keys = require('./keys');
-const Student = require('../models/student.model');
-const Coordinator = require('../models/coordinator.model');
+const User = require('../models/user.model');
 
 passport.use(
   new GoogleTokenStrategy({
@@ -13,13 +12,12 @@ passport.use(
     const email = profile.emails[0].value;
     const user = {
       email,
-      googleId: profile.id,
+      googleID: profile.id,
       name: profile.displayName
     };
-    if(keys.coordinators.find(x => x === email)){
-      Coordinator.findOrCreate(user, done);
-    } else {
-      Student.findOrCreate(user, done);
-    }
+    User
+    .findOrCreate(user)
+    .then(user => done(null, user))
+    .catch(err => done(err));
   })
 );
