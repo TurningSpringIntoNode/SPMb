@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 const Student = require('../models/student.model');
+const Coordinator = require('../models/coordinator.model');
 
 const UserSchema = new Schema({
   name: {
@@ -55,25 +56,29 @@ UserSchema.methods.setupRole = function () {
   const isCoordinator = keys.coordinators.find(x => x === user.email);
 
   return new Promise((resolve, reject) => {
+    const userMeta = {
+      user: {
+        id: user._id,
+        name: user.name
+      }
+    };
+    let userRole, role;
     if (isCoordinator) {
-
+      userRole = new Coordinator(userMeta);
+      role = 'coordinator';
     } else {
-      const student = new Student({
-        user: {
-          id: user._id,
-          name: user.name
-        }
-      });
-      student
-        .save()
-        .then(student => {
-          user.roles.student = student._id;
-          user
-            .save()
-            .then(resolve)
-        })
-        .catch(reject);
+      userRole = new Student(userMeta);
+      role = 'student';
     }
+    userRole
+      .save()
+      .then(userRole => {
+        user.roles[role] = userRole._id;
+        user
+          .save()
+          .then(resolve)
+      })
+      .catch(reject);
   });
 
 };
