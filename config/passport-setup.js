@@ -18,6 +18,6 @@ passport.use(
     User
     .findOrCreate(user)
     .then(user => done(null, user))
-    .catch(err => done(err));
+    .catch(done);
   })
 );

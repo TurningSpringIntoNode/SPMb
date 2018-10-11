@@ -4,33 +4,24 @@ const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
 
 const StudentSchema = new Schema({
-  name: {
-    type: String,
-    required: true
+  user: {
+    id: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    name: {
+      type: String,
+      default: ''
+    }
   },
   registration: String,
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  googleId: {
-    type: String,
-    required: true,
-    unique: true
-  },
   curricularGrade: {
     type: String,
     enum: ['NEW', 'OLD']
   },
   disciplines: [{
     type: String
-  }],
-  tokens: [{
-    token: {
-      type: String,
-      default: ''
-    }
   }]
 });
 
@@ -42,8 +33,6 @@ StudentSchema.methods.generateAuthToken = function () {
   }, keys.jwt.secret, {
     expiresIn: '12h'
   }).toString();
-
-  student.tokens = student.tokens.concat([{token}]);
 
   return student.save().then(() => token);
 };
@@ -71,8 +60,7 @@ StudentSchema.statics.findByToken = function (token) {
   }
 
   return Student.findOne({
-    '_id': decodedStudent.id,
-    'tokens.token': token
+    '_id': decodedStudent.id
   });
 };
 

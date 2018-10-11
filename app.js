@@ -9,6 +9,8 @@ require('./config/passport-setup');
 
 mongoose.connect(keys.mongo.uri, { useNewUrlParser: true });
 
+mongoose.Promise = global.Promise;
+
 const authRoutes = require('./routes/auth.route');
 
 const app = express();

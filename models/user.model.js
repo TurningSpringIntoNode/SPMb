@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema; 
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
+const Student = require('../models/student.model');
 
 const UserSchema = new Schema({
     name: {
@@ -17,9 +18,16 @@ const UserSchema = new Schema({
         required: true,
         unique: true
     },
-    roles: [{
-        
-    }]
+    roles: {
+        student: {
+            type: Schema.Types.ObjectId,
+            ref: 'Student'
+        },
+        coordinator: {
+            type: Schema.Types.ObjectId,
+            ref: 'Coordinator'
+        }
+    }
 });
 
 UserSchema.methods.generateAuthToken = function () {
@@ -32,6 +40,35 @@ UserSchema.methods.generateAuthToken = function () {
     }).toString();
 
     return user.save().then(() => token);
+};
+
+UserSchema.methods.setupRole = function () {
+    const user = this;
+
+    const isCoordinator = keys.coordinators.find(x => x === user.email);
+
+    return new Promise((resolve, reject) => {
+        if(isCoordinator){
+            
+        } else {
+            const student = new Student({
+                user: {
+                    id: user._id,
+                    name: user.name
+                }
+            });
+            student
+            .save()
+            .then(student => {
+                user.roles.student = student._id;
+                user
+                .save()
+                .then(resolve)
+            })
+            .catch(reject);
+        }
+    });
+
 };
 
 UserSchema.statics.findByToken = function (token) {
@@ -57,7 +94,7 @@ UserSchema.statics.findOrCreate = function (user) {
     .then(savedUser => {
         if(!savedUser){
             const newUser = new User(user);
-            return newUser.save()
+            return newUser.setupRole();
         } else {
             return savedUser;
         }
