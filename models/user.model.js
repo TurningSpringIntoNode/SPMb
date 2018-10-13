@@ -31,6 +31,17 @@ const UserSchema = new Schema({
   }
 });
 
+
+UserSchema.methods.toJSON = function () {
+  const user = this;
+
+  return {
+    id: user._id,
+    name: user.name,
+    email: user.email
+  };
+};
+
 UserSchema.methods.getRole = function () {
   const user = this;
 

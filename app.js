@@ -11,8 +11,9 @@ mongoose.connect(keys.mongo.uri, { useNewUrlParser: true });
 
 mongoose.Promise = global.Promise;
 
-const authRoutes = require('./routes/auth.route');
-const studentsRoutes = require('./routes/students.route');
+const authRouter = require('./routes/auth.route');
+const studentsRouter = require('./routes/students.route');
+const indexRouter = require('./routes/index.route');
 
 const app = express();
 
@@ -21,7 +22,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/auth', authRoutes);
-app.use('/students', studentsRoutes);
+app.use('/', indexRouter);
+app.use('/auth', authRouter);
+app.use('/students', studentsRouter);
 
 module.exports = app;
