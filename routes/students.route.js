@@ -8,10 +8,11 @@ router.all('/*', authMiddleware);
 
 router.get('/:id', (req, res, next) => {
   
-  if(req.user.canPlay('Coordinator') || (req.user.canPlay('Student') && req.user.roles.student === req.params.id))
+  if(req.user.canPlay('Coordinator') || (req.user.canPlay('Student') && req.user._id.toHexString() === req.params.id)) {
     next();
-  else
+  } else {
     res.status(401).send();
+  }
 
 }, (req, res) => {
   const studentId = req.params.id;

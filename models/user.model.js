@@ -35,7 +35,7 @@ UserSchema.methods.canPlay = function (role) {
   const user = this;
   if(role === 'Coordinator')
     return !!user.roles.coordinator;
-  if(role == 'Student')
+  if(role === 'Student')
     return !!user.roles.student;
   return false;
 };
