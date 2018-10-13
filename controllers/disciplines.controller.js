@@ -8,7 +8,20 @@ const getById = (id) => {
   return Discipline.findById(id);
 };
 
+const addDiscipline = (discipline) => {
+  const disciplineObj = new Discipline(discipline);
+  return disciplineObj.save();
+};
+
+const deleteById = (id) => {
+  return Discipline.deleteOne({
+    '_id': id
+  });
+};
+
 module.exports = {
   getAll,
-  getById
+  getById,
+  addDiscipline,
+  deleteById
 };
