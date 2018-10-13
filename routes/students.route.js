@@ -2,15 +2,24 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/auth.middleware');
 const studentMiddleware = require('../middlewares/student.middleware');
+const StudentsController = require('../controllers/students.controller');
 
 router.all('/*', authMiddleware);
-router.all('/*', studentMiddleware);
 
-router.get('/me', (req, res) => {
-  req.user.populate('roles.student', (err, user) => {
-    console.log(err, user);
-    res.send(user.roles.student);
-  })
+router.get('/:id', (req, res, next) => {
+  
+  if(req.user.canPlay('Coordinator') || (req.user.canPlay('Student') && req.user.roles.student === req.params.id))
+    next();
+  else
+    res.status(401).send();
+
+}, (req, res) => {
+  const studentId = req.params.id;
+  StudentsController
+  .getById(studentId)
+  .then(student => res.send(student))
+  .catch(e => res.status(404).send())
 });
+
 
 module.exports = router;

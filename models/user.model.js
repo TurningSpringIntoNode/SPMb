@@ -31,6 +31,15 @@ const UserSchema = new Schema({
   }
 });
 
+UserSchema.methods.canPlay = function (role) {
+  const user = this;
+  if(role === 'Coordinator')
+    return !!user.roles.coordinator;
+  if(role == 'Student')
+    return !!user.roles.student;
+  return false;
+};
+
 
 UserSchema.methods.toJSON = function () {
   const user = this;
