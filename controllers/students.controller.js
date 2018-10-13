@@ -1,4 +1,5 @@
 const Student = require('../models/student.model');
+const UsersController = require('./users.controller');
 
 const getAll = () => {
   return Student.find({});
@@ -11,8 +12,10 @@ const getById = (id) => {
 };
 
 const deleteById = (id) => {
-  return Student.deleteOne({
-    'user.id': id
+  return UsersController.updateStudentRef(id).then(() => {
+    return Student.deleteOne({
+      'user.id': id
+    });
   });
 };
 

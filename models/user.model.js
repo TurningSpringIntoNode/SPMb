@@ -61,8 +61,7 @@ UserSchema.methods.generateAuthToken = function () {
   const user = this;
 
   const token = jwt.sign({
-    id: user._id.toHexString(),
-    role: user.getRole()
+    id: user._id.toHexString()
   }, keys.jwt.secret, {
     expiresIn: '12h'
   }).toString();
@@ -116,11 +115,7 @@ UserSchema.statics.findByToken = function (token) {
 
   console.log(decodedUser);
 
-  return User.findById(decodedUser.id).then(user => {
-    if (user.getRole() !== decodedUser.role)
-      return Promise.reject()
-    return user;
-  });
+  return User.findById(decodedUser.id);
 };
 
 UserSchema.statics.findOrCreate = function (user) {
