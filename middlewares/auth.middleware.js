@@ -1,9 +1,7 @@
 const User = require('../models/user.model');
 
-const auth = (req, res, next) => {
+const isAuthenticatedUser = (req, res, next) => {
   const token = req.header('x-auth');
-
-  console.log(token);
 
   User.findByToken(token).then(user => {
       if (!user) {
@@ -17,4 +15,18 @@ const auth = (req, res, next) => {
     });
 };
 
-module.exports = auth;
+const hasRole = (role) => {
+  const isAuthenticatedWithRole = (req, res, next) => {
+    if(req.user.canPlay(role)){
+      next();
+    } else {
+      res.status(401).send();
+    }
+  };
+  return isAuthenticatedWithRole;
+};
+
+module.exports = {
+  isAuthenticatedUser,
+  hasRole
+};

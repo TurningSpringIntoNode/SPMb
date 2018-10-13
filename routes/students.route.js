@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middlewares/auth.middleware');
-const studentMiddleware = require('../middlewares/student.middleware');
 const StudentsController = require('../controllers/students.controller');
 
-router.all('/*', authMiddleware);
+router.all('/*', authMiddleware.isAuthenticatedUser);
 
 const isAllowedId = (req, res, next) => {
   if(req.user.canPlay('Coordinator') || (req.user.canPlay('Student') && req.user._id.toHexString() === req.params.id)) {
@@ -14,7 +13,7 @@ const isAllowedId = (req, res, next) => {
   }
 };
 
-router.get('/', (req, res) => {
+router.get('/', authMiddleware.hasRole('Coordinator'), (req, res) => {
   StudentsController
   .getAll()
   .then(students => res.send(students))
