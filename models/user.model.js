@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
@@ -8,35 +9,33 @@ const Coordinator = require('../models/coordinator.model');
 const UserSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   email: {
     type: String,
-    required: true
+    required: true,
   },
   googleID: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   roles: {
     student: {
       type: Schema.Types.ObjectId,
-      ref: 'Student'
+      ref: 'Student',
     },
     coordinator: {
       type: Schema.Types.ObjectId,
-      ref: 'Coordinator'
-    }
-  }
+      ref: 'Coordinator',
+    },
+  },
 });
 
 UserSchema.methods.canPlay = function (role) {
   const user = this;
-  if(role === 'Coordinator')
-    return !!user.roles.coordinator;
-  if(role === 'Student')
-    return !!user.roles.student;
+  if (role === 'Coordinator') return !!user.roles.coordinator;
+  if (role === 'Student') return !!user.roles.student;
   return false;
 };
 
@@ -47,7 +46,7 @@ UserSchema.methods.toJSON = function () {
   return {
     id: user._id,
     name: user.name,
-    email: user.email
+    email: user.email,
   };
 };
 
@@ -61,9 +60,9 @@ UserSchema.methods.generateAuthToken = function () {
   const user = this;
 
   const token = jwt.sign({
-    id: user._id.toHexString()
+    id: user._id.toHexString(),
   }, keys.jwt.secret, {
-    expiresIn: '12h'
+    expiresIn: '12h',
   }).toString();
 
   return user.save().then(() => token);
@@ -78,10 +77,11 @@ UserSchema.methods.setupRole = function () {
     const userMeta = {
       user: {
         id: user._id,
-        name: user.name
-      }
+        name: user.name,
+      },
     };
-    let userRole, role;
+    let userRole; let
+      role;
     if (isCoordinator) {
       userRole = new Coordinator(userMeta);
       role = 'coordinator';
@@ -91,15 +91,14 @@ UserSchema.methods.setupRole = function () {
     }
     userRole
       .save()
-      .then(userRole => {
+      .then((userRole) => {
         user.roles[role] = userRole._id;
         user
           .save()
-          .then(resolve)
+          .then(resolve);
       })
       .catch(reject);
   });
-
 };
 
 UserSchema.statics.findByToken = function (token) {
@@ -122,15 +121,14 @@ UserSchema.statics.findOrCreate = function (user) {
   const User = this;
 
   return User.findOne({
-      googleID: user.googleID
-    })
-    .then(savedUser => {
+    googleID: user.googleID,
+  })
+    .then((savedUser) => {
       if (!savedUser) {
         const newUser = new User(user);
         return newUser.setupRole();
-      } else {
-        return savedUser;
       }
+      return savedUser;
     });
 };
 

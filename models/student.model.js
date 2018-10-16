@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
 const StudentSchema = new Schema({
@@ -6,22 +7,22 @@ const StudentSchema = new Schema({
     id: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true
+      required: true,
     },
     name: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   registration: String,
   curricularGrade: {
     type: String,
-    enum: ['NEW', 'OLD']
+    enum: ['NEW', 'OLD'],
   },
   disciplines: [{
     type: Schema.Types.ObjectId,
-    ref: 'Discipline'
-  }]
+    ref: 'Discipline',
+  }],
 });
 
 StudentSchema.methods.toJSON = function () {
@@ -30,8 +31,8 @@ StudentSchema.methods.toJSON = function () {
     name: student.user.name,
     registration: student.registration,
     curricularGrade: student.curricularGrade,
-    disciplines: student.disciplines
-  }
+    disciplines: student.disciplines,
+  };
 };
 
 const Student = mongoose.model('Student', StudentSchema);

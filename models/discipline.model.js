@@ -1,29 +1,30 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
 const DisciplineSchema = new Schema({
   id: {
     type: String,
-    required: true
+    required: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   period: Number,
   credits: Number,
   curricularGrade: [{
     type: String,
-    enum: ['NEW', 'OLD']
+    enum: ['NEW', 'OLD'],
   }],
   curricularType: {
     type: String,
-    enum: ['REQUIRED', 'OPTIONAL']
+    enum: ['REQUIRED', 'OPTIONAL'],
   },
   students: [{
     type: Schema.Types.ObjectId,
-    ref: 'Student'
-  }]
+    ref: 'Student',
+  }],
 });
 
 const Discipline = mongoose.model('Discipline', DisciplineSchema);
