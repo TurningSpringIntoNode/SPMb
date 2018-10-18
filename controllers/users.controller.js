@@ -5,6 +5,7 @@ const updateStudentRef = (id, newRef) => User.findById(id).then((user) => {
     user.roles.student = newRef;
     return user.save();
   }
+  return null;
 });
 
 module.exports = {

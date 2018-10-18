@@ -14,27 +14,10 @@ const isAllowedId = (req, res, next) => {
   }
 };
 
-router.get('/', authMiddleware.hasRole('Coordinator'), (req, res) => {
-  StudentsController
-    .getAll()
-    .then(students => res.send(students))
-    .catch(e => res.status(404).send());
-});
+router.get('/', authMiddleware.hasRole('Coordinator'), StudentsController.getAll);
 
-router.get('/:id', isAllowedId, (req, res) => {
-  const studentId = req.params.id;
-  StudentsController
-    .getById(studentId)
-    .then(student => res.send(student))
-    .catch(e => res.status(404).send());
-});
+router.get('/:id', isAllowedId, StudentsController.getById);
 
-router.delete('/:id', isAllowedId, (req, res) => {
-  const studentId = req.params.id;
-  StudentsController
-    .deleteById(studentId)
-    .then(() => res.send())
-    .catch(e => res.status(400));
-});
+router.delete('/:id', isAllowedId, StudentsController.deleteById);
 
 module.exports = router;

@@ -2,14 +2,10 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const keys = require('./config/keys');
 
 require('./config/passport-setup');
+require('./core/mongodb').connect();
 
-mongoose.connect(keys.mongo.uri, { useNewUrlParser: true });
-
-mongoose.Promise = global.Promise;
 
 const app = express();
 

@@ -8,7 +8,7 @@ passport.use(
     clientID: keys.google.clientID,
     clientSecret: keys.google.clientSecret,
   }, (acessToken, refreshToken, profile, done) => {
-    console.log(profile);
+    // console.log(profile);
     const email = profile.emails[0].value;
     const user = {
       email,
@@ -17,7 +17,7 @@ passport.use(
     };
     User
       .findOrCreate(user)
-      .then(user => done(null, user))
+      .then(nUser => done(null, nUser))
       .catch(done);
   }),
 );

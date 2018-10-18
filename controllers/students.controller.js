@@ -1,23 +1,37 @@
 const Student = require('../models/student.model');
 const UsersController = require('./users.controller');
 
-const getAll = () => Student.find({});
+const getAll = (req, res) => {
+  Student
+    .find({})
+    .then((students) => {
+      res.send(students);
+    })
+    .catch(() => res.sendStatus(400));
+};
 
-const getById = id => Student.findOne({
-  'user.id': id,
-});
+const getById = (req, res) => {
+  Student
+    .find({ 'user.id': req.params.id })
+    .then(student => res.send(student))
+    .catch(() => res.sendStatus(400));
+};
 
-const deleteById = id => UsersController.updateStudentRef(id).then(() => Student.deleteOne({
-  'user.id': id,
-}));
+const deleteById = (req, res) => {
+  UsersController
+    .updateStudentRef(req.params.id)
+    .then(() => Student.deleteOne({ 'user.id': req.params.id }))
+    .then(() => res.sendStatus(200))
+    .catch(() => res.sendStatus(400));
+};
 
 const getDisciplinesOfStudentById = id => getById(id).then((student) => {
   if (!student) {
     return [];
   }
-  student.populate('disciplines', (err, student) => {
+  return student.populate('disciplines', (err, populatedStudent) => {
     if (err) return Promise.reject();
-    return student.disciplines;
+    return populatedStudent.disciplines;
   });
 });
 
