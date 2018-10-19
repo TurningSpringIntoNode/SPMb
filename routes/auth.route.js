@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const passport = require('passport');
-const models = require('../models');
+const models = require('../models/users/index');
 
 router.post('/google', passport.authenticate('google-token', { session: false }), (req, res, next) => {
   if (!req.user) {

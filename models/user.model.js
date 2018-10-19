@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 const keys = require('../config/keys');
-const Student = require('../models/student.model');
-const Coordinator = require('../models/coordinator.model');
+const Student = require('./users/student.model');
+const Coordinator = require('./users/coordinator.model');
 
 const UserSchema = new Schema({
   name: {

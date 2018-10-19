@@ -26,6 +26,7 @@ const hasRole = (role) => {
   return isAuthenticatedWithRole;
 };
 
+
 module.exports = {
   isAuthenticatedUser,
   hasRole,

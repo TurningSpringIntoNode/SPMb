@@ -1,4 +1,4 @@
-const Student = require('../models/student.model');
+const Student = require('../models/users/student.model');
 const UsersController = require('./users.controller');
 
 const getAll = (req, res) => {
