@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const passport = require('passport');
-const models = require('../models/users/index');
+const UserModels = require('../models/users/index');
 
 router.post('/google', passport.authenticate('google-token', { session: false }), (req, res, next) => {
   if (!req.user) {
@@ -17,7 +17,7 @@ router.post('/google', passport.authenticate('google-token', { session: false })
 
   const user = req.user;
 
-  const User = models[role];
+  const User = UserModels[role];
   User
     .findByEmail(user.email)
     .then(user => {

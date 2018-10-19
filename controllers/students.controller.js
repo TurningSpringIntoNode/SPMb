@@ -12,7 +12,7 @@ const getAll = (req, res) => {
 
 const getById = (req, res) => {
   Student
-    .find({ 'user.id': req.params.id })
+    .findById(req.params.id)
     .then(student => res.send(student))
     .catch(() => res.sendStatus(400));
 };

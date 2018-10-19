@@ -20,7 +20,8 @@ StudentSchema.plugin(userPlugin);
 StudentSchema.methods.toJSON = function () {
   const student = this;
   return {
-    name: student.user.name,
+    id: student._id.toHexString(),
+    name: student.name,
     registration: student.registration,
     curricularGrade: student.curricularGrade,
     disciplines: student.disciplines,

@@ -1,33 +1,28 @@
-const User = require('../models/user.model');
+const UserModels = require('../models/users');
 
-const isAuthenticatedUser = (req, res, next) => {
-  const token = req.header('x-auth');
+const isAuthorized = (validRoles) => {
+  return (req, res, next) => {
 
-  User.findByToken(token).then((user) => {
-    if (!user) {
-      return Promise.reject();
-    }
-    req.user = user;
-    next();
-  })
-    .catch((e) => {
-      res.status(401).send();
+    const token = req.header('x-auth');
+
+    validRoles.forEach(role => {
+      const userModel = UserModels[role];
+      if (userModel) {
+        userModel
+          .findByToken(token)
+          .then(user => {
+            if (user) {
+              req.role = role;
+              req.user = user;
+              next();
+            }
+          });
+      }
     });
-};
-
-const hasRole = (role) => {
-  const isAuthenticatedWithRole = (req, res, next) => {
-    if (req.user.canPlay(role)) {
-      next();
-    } else {
-      res.status(401).send();
-    }
   };
-  return isAuthenticatedWithRole;
 };
 
 
 module.exports = {
-  isAuthenticatedUser,
-  hasRole,
+  isAuthorized
 };

@@ -4,20 +4,20 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/auth.middleware');
 const StudentsController = require('../controllers/students.controller');
 
-router.all('/*', authMiddleware.isAuthenticatedUser);
-
 const isAllowedId = (req, res, next) => {
-  if (req.user.canPlay('Coordinator') || (req.user.canPlay('Student') && req.user._id.toHexString() === req.params.id)) {
+  if (req.role === 'Coordinator') {
+    next();
+  } else if (req.role === 'Student' && req.params.id === req.user._id.toHexString()) {
     next();
   } else {
-    res.status(401).send();
+    res.sendStatus(401);
   }
 };
 
-router.get('/', authMiddleware.hasRole('Coordinator'), StudentsController.getAll);
+router.get('/', authMiddleware.isAuthorized(['Coordinator']), StudentsController.getAll);
 
-router.get('/:id', isAllowedId, StudentsController.getById);
+router.get('/:id', authMiddleware.isAuthorized(['Coordinator', 'Student']), isAllowedId, StudentsController.getById);
 
-router.delete('/:id', isAllowedId, StudentsController.deleteById);
+router.delete('/:id', authMiddleware.isAuthorized(['Coordinator', 'Student']), isAllowedId, StudentsController.deleteById);
 
 module.exports = router;

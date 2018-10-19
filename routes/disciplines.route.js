@@ -19,7 +19,7 @@ router.get('/:id', (req, res) => {
     .catch(e => res.status(404).send());
 });
 
-router.post('/', authMiddleware.isAuthenticatedUser, authMiddleware.hasRole('Coordinator'), (req, res) => {
+router.post('/', authMiddleware.isAuthorized(['Coordinator']), (req, res) => {
   const discipline = req.body;
   DisciplinesController
     .addDiscipline(discipline)
@@ -27,7 +27,7 @@ router.post('/', authMiddleware.isAuthenticatedUser, authMiddleware.hasRole('Coo
     .catch(e => res.status(400).send());
 });
 
-router.delete('/:id', authMiddleware.isAuthenticatedUser, authMiddleware.hasRole('Coordinator'), (req, res) => {
+router.delete('/:id', authMiddleware.isAuthorized(['Coordinator']), (req, res) => {
   const disciplineId = req.params.id;
   DisciplinesController
     .deleteById(disciplineId)
