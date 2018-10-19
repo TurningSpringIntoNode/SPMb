@@ -1,19 +1,9 @@
 const mongoose = require('mongoose');
+const userPlugin = require('./plugins/user.plugin');
 
 const Schema = mongoose.Schema;
 
 const StudentSchema = new Schema({
-  user: {
-    id: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    name: {
-      type: String,
-      default: '',
-    },
-  },
   registration: String,
   curricularGrade: {
     type: String,
@@ -24,6 +14,8 @@ const StudentSchema = new Schema({
     ref: 'Discipline',
   }],
 });
+
+StudentSchema.plugin(userPlugin);
 
 StudentSchema.methods.toJSON = function () {
   const student = this;
