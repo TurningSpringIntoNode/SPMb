@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const userPlugin = require('./plugins/user.plugin');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const CoordinatorSchema = new Schema({});
 

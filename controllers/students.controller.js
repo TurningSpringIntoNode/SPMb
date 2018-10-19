@@ -10,7 +10,6 @@ const getAll = (req, res) => {
 };
 
 const getById = (req, res) => {
-
   const studentId = req.params.id;
 
   Student
@@ -20,7 +19,6 @@ const getById = (req, res) => {
 };
 
 const deleteById = (req, res) => {
-
   const studentId = req.params.id;
 
   Student
@@ -30,42 +28,42 @@ const deleteById = (req, res) => {
 };
 
 const getDisciplinesOfStudentById = (req, res) => {
-
   const studentId = req.params.id;
 
   Student
     .findById(studentId)
-    .then(student => {
+    .then((student) => {
       if (!student) {
-        return res.send([]);
+        res.send([]);
+      } else {
+        student.populate('disciplines', (err, populatedStudent) => {
+          if (err) {
+            Promise.reject();
+          } else {
+            res.send(populatedStudent.disciplines);
+          }
+        });
       }
-      student.poopulate('disciplines', (err, populatedStudent) => {
-        if (err) {
-          return Promise.reject();
-        } else {
-          res.send(populatedStudent.disciplines);
-        }
-      })
     })
-    .catch(() => res.sendStatus(400))
+    .catch(() => res.sendStatus(400));
 };
 
 const updateDisciplinesOfStudentById = (req, res) => {
-
   const studentId = req.params.id;
 
   Student
     .findById(studentId)
-    .then(student => {
+    .then((student) => {
       if (!student) {
-        return res.sendStatus(200);
+        res.sendStatus(200);
+      } else {
+        student.disciplines = disciplines;
+        student
+          .save()
+          .then(() => res.sendStatus(200));
       }
-      student.disciplines = disciplines;
-      student
-        .save()
-        .then(() => res.sendStatus(200));
     })
-    .catch(() => res.sendStatus(400))
+    .catch(() => res.sendStatus(400));
 };
 
 module.exports = {

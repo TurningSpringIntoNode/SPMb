@@ -4,32 +4,32 @@ const router = express.Router();
 const passport = require('passport');
 const UserModels = require('../models/users/index');
 
-router.post('/google', passport.authenticate('google-token', { session: false }), (req, res, next) => {
+router.post('/google', passport.authenticate('google-token', { session: false }), (req, res) => {
   if (!req.user) {
-    return res.status(401).send('User not authorized');
+    res.status(401).send('User not authorized');
+  } else {
+    const role = req.body.role;
+
+    if (role !== 'Student' && role !== 'Coordinator') {
+      res.sendStatus(400);
+    } else {
+      const user = req.user;
+
+      const User = UserModels[role];
+      User
+        .findByEmail(user.email)
+        .then((dbUser) => {
+          if (!dbUser) {
+            const newUser = new User(req.user);
+            newUser.save();
+            return newUser;
+          }
+          return dbUser;
+        })
+        .then(myUser => res.send({ token: myUser.generateAuthToken() }))
+        .catch(() => res.sendStatus(400));
+    }
   }
-
-  const role = req.body.role;
-
-  if (role !== 'Student' && role !== 'Coordinator') {
-    return res.sendStatus(400);
-  }
-
-  const user = req.user;
-
-  const User = UserModels[role];
-  User
-    .findByEmail(user.email)
-    .then(user => {
-      if (!user) {
-        const newUser = new User(req.user);
-        newUser.save();
-        return newUser;
-      }
-      return user;
-    })
-    .then(user => res.send({token: user.generateAuthToken()}))
-    .catch(() => res.sendStatus(400));
 });
 
 module.exports = router;

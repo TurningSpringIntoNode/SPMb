@@ -1,4 +1,7 @@
+const Student = require('./student.model');
+const Coordinator = require('./coordinator.model');
+
 module.exports = {
-  Student: require('./student.model'),
-  Coordinator: require('./coordinator.model')
+  Student,
+  Coordinator,
 };

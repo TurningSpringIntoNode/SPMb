@@ -22,7 +22,7 @@ const addDiscipline = (req, res) => {
   discipline
     .save()
     .then(savedDiscipline => res.send(savedDiscipline))
-    .catch(() => res.sendStatus(400))
+    .catch(() => res.sendStatus(400));
 };
 
 const deleteById = (req, res) => {

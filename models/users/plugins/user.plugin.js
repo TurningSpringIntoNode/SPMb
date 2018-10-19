@@ -6,21 +6,21 @@ module.exports = (schema) => {
   schema.add({
     name: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   });
 
   schema.methods.generateAuthToken = function () {
     const user = this;
 
     const token = jwt.sign({
-      id: user._id.toHexString()
+      id: user._id.toHexString(),
     }, keys.jwt.secret, {
-      expiresIn: '12h'
+      expiresIn: '12h',
     });
 
     return token;
@@ -28,7 +28,7 @@ module.exports = (schema) => {
 
   schema.statics.findByEmail = function (email) {
     const sch = this;
-    return sch.findOne({email})
+    return sch.findOne({ email });
   };
 
   schema.statics.findByToken = function (token) {
@@ -44,5 +44,4 @@ module.exports = (schema) => {
 
     return sch.findById(decodedUser.id);
   };
-
 };
