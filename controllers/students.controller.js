@@ -1,5 +1,4 @@
 const Student = require('../models/users/student.model');
-const UsersController = require('./users.controller');
 
 const getAll = (req, res) => {
   Student
@@ -11,37 +10,63 @@ const getAll = (req, res) => {
 };
 
 const getById = (req, res) => {
+
+  const studentId = req.params.id;
+
   Student
-    .findById(req.params.id)
+    .findById(studentId)
     .then(student => res.send(student))
     .catch(() => res.sendStatus(400));
 };
 
 const deleteById = (req, res) => {
-  UsersController
-    .updateStudentRef(req.params.id)
-    .then(() => Student.deleteById(req.params.id))
+
+  const studentId = req.params.id;
+
+  Student
+    .deleteById(studentId)
     .then(() => res.sendStatus(200))
     .catch(() => res.sendStatus(400));
 };
 
-const getDisciplinesOfStudentById = id => getById(id).then((student) => {
-  if (!student) {
-    return [];
-  }
-  return student.populate('disciplines', (err, populatedStudent) => {
-    if (err) return Promise.reject();
-    return populatedStudent.disciplines;
-  });
-});
+const getDisciplinesOfStudentById = (req, res) => {
 
-const updateDisciplinesOfStudentById = (id, disciplines) => getById(id).then((student) => {
-  if (student) {
-    student.disciplines = disciplines;
-    return student.save();
-  }
-  return student;
-});
+  const studentId = req.params.id;
+
+  Student
+    .findById(studentId)
+    .then(student => {
+      if (!student) {
+        return res.send([]);
+      }
+      student.poopulate('disciplines', (err, populatedStudent) => {
+        if (err) {
+          return Promise.reject();
+        } else {
+          res.send(populatedStudent.disciplines);
+        }
+      })
+    })
+    .catch(() => res.sendStatus(400))
+};
+
+const updateDisciplinesOfStudentById = (req, res) => {
+
+  const studentId = req.params.id;
+
+  Student
+    .findById(studentId)
+    .then(student => {
+      if (!student) {
+        return res.sendStatus(200);
+      }
+      student.disciplines = disciplines;
+      student
+        .save()
+        .then(() => res.sendStatus(200));
+    })
+    .catch(() => res.sendStatus(400))
+};
 
 module.exports = {
   getAll,

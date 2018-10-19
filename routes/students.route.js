@@ -16,8 +16,14 @@ const isAllowedId = (req, res, next) => {
 
 router.get('/', authMiddleware.isAuthorized(['Coordinator']), StudentsController.getAll);
 
-router.get('/:id', authMiddleware.isAuthorized(['Coordinator', 'Student']), isAllowedId, StudentsController.getById);
+router.all('/:id', authMiddleware.isAuthorized(['Coordinator', 'Student']), isAllowedId);
 
-router.delete('/:id', authMiddleware.isAuthorized(['Coordinator', 'Student']), isAllowedId, StudentsController.deleteById);
+router.get('/:id', StudentsController.getById);
+
+router.delete('/:id', StudentsController.deleteById);
+
+router.get('/:id/disciplines', StudentsController.getDisciplinesOfStudentById);
+
+router.patch('/:id/disciplines', StudentsController.updateDisciplinesOfStudentById);
 
 module.exports = router;
