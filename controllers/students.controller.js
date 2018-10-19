@@ -20,7 +20,7 @@ const getById = (req, res) => {
 const deleteById = (req, res) => {
   UsersController
     .updateStudentRef(req.params.id)
-    .then(() => Student.deleteOne({ 'user.id': req.params.id }))
+    .then(() => Student.deleteById(req.params.id))
     .then(() => res.sendStatus(200))
     .catch(() => res.sendStatus(400));
 };
