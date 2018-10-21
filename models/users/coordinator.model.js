@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const userPlugin = require('./plugins/user.plugin');
-const { coordinatorEmail } = require('../../config/keys');
+const { coordinatorEmail } = require('../../app.config');
 
 const { Schema } = mongoose;
 

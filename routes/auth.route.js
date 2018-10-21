@@ -3,8 +3,21 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const UserModels = require('../models/users/index');
+const { isProduction } = require('../app.config');
 
-router.post('/google', passport.authenticate('google-token', { session: false }), (req, res) => {
+let passportMiddleware;
+
+if (isProduction) {
+  passportMiddleware = passport.authenticate('google-token', { session: false });
+} else {
+  passportMiddleware = (req, res, next) => {
+    req.user = req.body.user;
+    delete req.body.user;
+    next();
+  };
+}
+
+router.post('/google', passportMiddleware, (req, res) => {
   if (!req.user) {
     res.status(401).send('User not authorized');
   } else {
@@ -20,7 +33,7 @@ router.post('/google', passport.authenticate('google-token', { session: false })
         .findByEmail(user.email)
         .then((dbUser) => {
           if (!dbUser) {
-            if (role === 'Coordinator') {
+            if (role === 'Coordinator' && isProduction) {
               return Promise.reject();
             }
             const newUser = new User(req.user);

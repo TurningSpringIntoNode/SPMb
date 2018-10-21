@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
-const keys = require('../config/keys');
+const config = require('../app.config');
 
 mongoose.Promise = global.Promise;
 
 exports.mongoose = mongoose;
 
 exports.connect = () => {
-  mongoose.connect(keys.mongo.uri, {
+  mongoose.connect(config.mongo.uri, {
     useNewUrlParser: true,
     useCreateIndex: true,
   });

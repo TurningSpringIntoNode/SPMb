@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const keys = require('../../../config/keys');
+const config = require('../../../app.config');
 
 module.exports = (schema) => {
   schema.add({
@@ -19,7 +19,7 @@ module.exports = (schema) => {
 
     const token = jwt.sign({
       id: user._id.toHexString(),
-    }, keys.jwt.secret, {
+    }, config.jwt.secret, {
       expiresIn: '12h',
     });
 
@@ -37,7 +37,7 @@ module.exports = (schema) => {
     let decodedUser;
 
     try {
-      decodedUser = jwt.verify(token, keys.jwt.secret);
+      decodedUser = jwt.verify(token, config.jwt.secret);
     } catch (e) {
       return Promise.reject();
     }

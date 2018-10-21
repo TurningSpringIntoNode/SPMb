@@ -1,11 +1,11 @@
 const passport = require('passport');
 const GoogleTokenStrategy = require('passport-google-token').Strategy;
-const keys = require('./keys');
+const config = require('../app.config');
 
 passport.use(
   new GoogleTokenStrategy({
-    clientID: keys.google.clientID,
-    clientSecret: keys.google.clientSecret,
+    clientID: config.google.clientID,
+    clientSecret: config.google.clientSecret,
   }, (acessToken, refreshToken, profile, done) => {
     // console.log(profile);
     const email = profile.emails[0].value;
