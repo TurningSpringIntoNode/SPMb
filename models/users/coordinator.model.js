@@ -15,6 +15,6 @@ const coordinator = new Coordinator({
   email: coordinatorEmail,
 });
 
-coordinator.save();
+coordinator.save().catch(() => {});
 
 module.exports = Coordinator;
