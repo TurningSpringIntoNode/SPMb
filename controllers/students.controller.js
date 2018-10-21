@@ -50,6 +50,7 @@ const getDisciplinesOfStudentById = (req, res) => {
 
 const updateDisciplinesOfStudentById = (req, res) => {
   const studentId = req.params.id;
+  const { disciplines } = req.body;
 
   Student
     .findById(studentId)

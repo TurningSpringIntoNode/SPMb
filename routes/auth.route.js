@@ -8,12 +8,12 @@ router.post('/google', passport.authenticate('google-token', { session: false })
   if (!req.user) {
     res.status(401).send('User not authorized');
   } else {
-    const role = req.body.role;
+    const { role } = req.body;
 
     if (role !== 'Student' && role !== 'Coordinator') {
       res.sendStatus(400);
     } else {
-      const user = req.user;
+      const { user } = req;
 
       const User = UserModels[role];
       User
