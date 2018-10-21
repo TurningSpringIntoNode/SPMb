@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=production node ./bin/www",
     "dev": "NODE_ENV=development node ./bin/www",
-    "test": "NODE_ENV=test mocha **/*.test.js --timeout 1500"
+    "test": "NODE_ENV=test mocha **/*.test.js --timeout 3500"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,8 @@
     "eslint": "^5.7.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "mocha": "^5.2.0"
+    "expect.js": "^0.3.1",
+    "mocha": "^5.2.0",
+    "supertest": "^3.3.0"
   }
 }
