@@ -20,14 +20,21 @@ router.post('/google', passport.authenticate('google-token', { session: false })
         .findByEmail(user.email)
         .then((dbUser) => {
           if (!dbUser) {
+            if (role === 'Coordinator') {
+              return Promise.reject();
+            }
             const newUser = new User(req.user);
             newUser.save();
             return newUser;
           }
+          if (!dbUser.name) {
+            dbUser.name = user.name;
+            return dbUser.save();
+          }
           return dbUser;
         })
         .then(myUser => res.send({ token: myUser.generateAuthToken() }))
-        .catch(() => res.sendStatus(400));
+        .catch(() => res.sendStatus(401));
     }
   }
 });
