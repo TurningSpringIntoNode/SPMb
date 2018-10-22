@@ -26,7 +26,6 @@ describe('POST /auth/google', () => {
       .expect(200)
       .then(res => res.body.token)
       .then(token => {
-        console.log(token);
         request(app)
           .get('/me')
           .set({ 'x-auth': token })
