@@ -12,7 +12,6 @@ if (isProduction) {
 } else {
   passportMiddleware = (req, res, next) => {
     req.user = Object.assign({}, req.body.user);
-    delete req.body.user;
     next();
   };
 }

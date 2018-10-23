@@ -22,6 +22,7 @@ StudentSchema.methods.toJSON = function () {
   return {
     id: student._id.toHexString(),
     name: student.name,
+    email: student.email,
     registration: student.registration,
     curricularGrade: student.curricularGrade,
     disciplines: student.disciplines,
