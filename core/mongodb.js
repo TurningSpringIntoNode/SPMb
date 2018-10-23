@@ -13,3 +13,7 @@ exports.connect = () => {
 
   return mongoose;
 };
+
+exports.disconnect = (cb) => {
+  mongoose.disconnect(cb);
+};

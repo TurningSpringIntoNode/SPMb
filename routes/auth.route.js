@@ -11,7 +11,8 @@ if (isProduction) {
   passportMiddleware = passport.authenticate('google-token', { session: false });
 } else {
   passportMiddleware = (req, res, next) => {
-    req.user = req.body.user;
+    req.user = Object.assign({}, req.body.user);
+    delete req.body.user;
     next();
   };
 }
@@ -36,8 +37,7 @@ router.post('/google', passportMiddleware, (req, res) => {
               return Promise.reject();
             }
             const newUser = new User(req.user);
-            newUser.save();
-            return newUser;
+            return newUser.save();
           }
           if (!dbUser.name) {
             dbUser.name = user.name;
