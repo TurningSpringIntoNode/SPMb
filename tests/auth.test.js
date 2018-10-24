@@ -184,4 +184,12 @@ describe('Auth', () => {
       .expect(401)
       .end(done);
   })
+
+  test('Invalid token request', (done) => {
+    request(app)
+      .get('/me')
+      .set('x-auth', '1103483024khdfhe9rhn2')
+      .expect(401)
+      .end(done);
+  });
 });
