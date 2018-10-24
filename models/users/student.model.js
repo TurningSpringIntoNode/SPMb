@@ -17,6 +17,7 @@ const StudentSchema = new Schema({
 
 StudentSchema.plugin(userPlugin);
 
+
 StudentSchema.methods.toJSON = function () {
   const student = this;
   return {

@@ -11,6 +11,12 @@ module.exports = (schema) => {
       type: String,
       required: true,
       unique: true,
+      validate: {
+        validator: function(v) {
+          return /[\w+.]*[\w]+@ccc.ufcg.edu.br/.test(v);
+        },
+        message: props => `${props.value} is not a valid email!`
+      },
     },
   });
 

@@ -9,7 +9,7 @@ const { Student, Coordinator } = require('../models').Users;
 
 const testUser = {
   name: 'Tester',
-  email: 'tester@tester.com',
+  email: 'tester@ccc.ufcg.edu.br',
 };
 
 describe('Auth', () => {
@@ -101,7 +101,7 @@ describe('Auth', () => {
 
   test('Update user name', (done) => {
     const studentd = {
-      email: 'student@s.com'
+      email: 'student@ccc.ufcg.edu.br'
     };
     const student = new Student(studentd);
     student
@@ -129,7 +129,7 @@ describe('Auth', () => {
                   email: user.email,
                   name: user.name
                 }).to.eql({
-                  email: 'student@s.com',
+                  email: 'student@ccc.ufcg.edu.br',
                   name: 'student_test'
                 });
                 done();
@@ -140,7 +140,7 @@ describe('Auth', () => {
 
   test('Log already saved user', (done) => {
     const student = {
-      email: 'fulano@beltrano.com',
+      email: 'fulano@ccc.ufcg.edu.br',
       name: 'Fulano'
     };
     new Student(student)
