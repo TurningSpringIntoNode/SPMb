@@ -1,11 +1,10 @@
+process.env.TEST_SUITE = 'auth';
+
 const expect = require('expect.js');
 const request = require('supertest');
 
 const app = require('../app');
-const { Discipline } = require('../models');
 const { Student, Coordinator } = require('../models').Users;
-
-
 
 const testUser = {
   name: 'Tester',

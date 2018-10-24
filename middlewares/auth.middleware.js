@@ -18,7 +18,7 @@ const isAuthorized = validRoles => (req, res, next) => {
             resolve();
           }
         })
-        .catch(resolve);
+        .catch(() => resolve());
     } else {
       resolve();
     }
