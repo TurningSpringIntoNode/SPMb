@@ -11,6 +11,12 @@ beforeAll((done) => {
   });
 });
 
-afterAll((done) => {
-  mongoose.disconnect(done);
+beforeEach( async () => {
+  for(const model in mongoose.connection.models){
+    await mongoose.connection.models[model].deleteMany({})
+  }
+});
+
+afterAll(async () => {
+  await mongoose.disconnect();
 });
