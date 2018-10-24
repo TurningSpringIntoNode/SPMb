@@ -170,4 +170,18 @@ describe('Auth', () => {
           });
       });
   });
+
+  test('Invalid email log in', (done) => {
+    request(app)
+      .post('/auth/google')
+      .send({
+        user: {
+          name: 'Fulano',
+          email: 'fulano@gmail.com'
+        },
+        role: 'Student'
+      })
+      .expect(401)
+      .end(done);
+  })
 });

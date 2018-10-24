@@ -140,4 +140,28 @@ describe('Students', () => {
       });
   });
 
+  test('Not authorized get student by id', (done) => {
+    populateDB()
+      .then(populated => {
+        request(app)
+          .post('/auth/google')
+          .send({
+            user: {
+              name: populated.students[1].name,
+              email: populated.students[1].email
+            },
+            role: 'Student'
+          })
+          .expect(200)
+          .then(res => res.body.token)
+          .then(token => {
+            request(app)
+              .get(`/students/${populated.students[0]._id}`)
+              .set('x-auth', token)
+              .expect(401)
+              .end(done);
+          });
+      });
+  });
+
 });
