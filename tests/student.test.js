@@ -57,8 +57,8 @@ const populateDB = () => {
               .then(token => {
                 resolve({
                   token,
-                  coordinator_db,
-                  students_db
+                  coordinator: coordinator_db,
+                  students: students_db
                 });
               });
           });
@@ -92,4 +92,52 @@ describe('Students', () => {
           });
       });
   });
+
+  test('Get student by id (coordinator)', (done) => {
+    populateDB()
+      .then(populated => {
+          request(app)
+            .get(`/students/${populated.students[0]._id}`)
+            .set('x-auth', populated.token)
+            .expect(200)
+            .then(res => res.body)
+            .then(student => {
+              expect(student.name).to.eql(populated.students[0].name);
+              expect(student.id).to.eql(populated.students[0]._id.toHexString());
+              expect(student.email).to.eql(populated.students[0].email);
+              done();
+            });
+      });
+  });
+
+  test('Get student by id (student)', (done) => {
+    populateDB()
+      .then(populated => {
+        request(app)
+          .post('/auth/google')
+          .send({
+            user: {
+              name: populated.students[0].name,
+              email: populated.students[0].email
+            },
+            role: 'Student'
+          })
+          .expect(200)
+          .then(res => res.body.token)
+          .then(token => {
+            request(app)
+              .get(`/students/${populated.students[0]._id}`)
+              .set('x-auth', token)
+              .expect(200)
+              .then(res => res.body)
+              .then(student => {
+                expect(student.name).to.eql(populated.students[0].name);
+                expect(student.id).to.eql(populated.students[0]._id.toHexString());
+                expect(student.email).to.eql(populated.students[0].email);
+                done();
+              });
+          });
+      });
+  });
+
 });
