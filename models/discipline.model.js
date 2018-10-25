@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
 
 const { Schema } = mongoose;
 
@@ -6,6 +7,7 @@ const DisciplineSchema = new Schema({
   id: {
     type: String,
     required: true,
+    unique: true,
   },
   name: {
     type: String,
@@ -26,6 +28,11 @@ const DisciplineSchema = new Schema({
     ref: 'Student',
   }],
 });
+
+DisciplineSchema.methods.toJSON = function () {
+  const discipline = this;
+  return _.pick(discipline, ['id', 'name', 'period', 'credits', 'curricularGrade', 'curricularType']);
+};
 
 const Discipline = mongoose.model('Discipline', DisciplineSchema);
 

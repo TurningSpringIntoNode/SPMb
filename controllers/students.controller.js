@@ -22,7 +22,7 @@ const deleteById = (req, res) => {
   const studentId = req.params.id;
 
   Student
-    .deleteById(studentId)
+    .deleteOne({ _id: studentId })
     .then(() => res.sendStatus(200))
     .catch(() => res.sendStatus(400));
 };
@@ -34,7 +34,7 @@ const getDisciplinesOfStudentById = (req, res) => {
     .findById(studentId)
     .then((student) => {
       if (!student) {
-        res.send([]);
+        res.sendStatus(404);
       } else {
         student.populate('disciplines', (err, populatedStudent) => {
           if (err) {
@@ -56,7 +56,7 @@ const updateDisciplinesOfStudentById = (req, res) => {
     .findById(studentId)
     .then((student) => {
       if (!student) {
-        res.sendStatus(200);
+        res.sendStatus(404);
       } else {
         student.disciplines = disciplines;
         student

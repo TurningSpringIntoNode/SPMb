@@ -1,18 +1,16 @@
 process.env.TEST_SUITE = 'student';
 
-const expect = require('expect.js');
+const expect = require('chai').expect;
 const request = require('supertest');
+const _ = require('lodash');
 
 const app = require('../app');
+const { Discipline } = require('../models');
 const { Coordinator, Student } = require('../models').Users;
 
 const coordinator = {
   name: 'coordinator',
   email: 'coordinator@ccc.ufcg.edu.br'
-};
-
-const populateCoordinator = () => {
-  return new Coordinator(coordinator).save();
 };
 
 const students = [
@@ -30,40 +28,71 @@ const students = [
   }
 ];
 
+const disciplines = [
+  {
+    id: '1',
+    name: 'p1',
+    period: 1,
+    credits: 4,
+    curricularGrade: ['NEW', 'OLD'],
+    curricularType: 'REQUIRED',
+  },
+  {
+    id: '2',
+    name: 'lp1',
+    period: 1,
+    credits: 4,
+    curricularGrade: ['NEW', 'OLD'],
+    curricularType: 'REQUIRED',
+  }
+];
+
+const populateCoordinator = () => {
+  return new Coordinator(coordinator).save();
+};
 
 const populateFakeStudents = async () => {
-  return new Promise((resolve, reject) => {
-    const prom = students.map(student => new Student(student).save());
-    Promise
-      .all(prom)
-      .then(values => resolve(values))
-      .catch(err => reject(err))
-  });
+  const prom = students.map(student => new Student(student).save());
+  return Promise
+          .all(prom);
+};
+
+const populateDisciplines = () => {
+  const prom = disciplines.map(discipline => new Discipline(discipline).save());
+  return Promise
+          .all(prom);
 };
 
 const populateDB = () => {
+  const prom = [
+    populateCoordinator(),
+    populateFakeStudents(),
+    populateDisciplines(),
+  ];
   return new Promise((resolve, reject) => {
-    populateCoordinator()
-      .then((coordinator_db) => {
-        populateFakeStudents()
-          .then((students_db) => {
-            request(app)
-              .post('/auth/google')
-              .send({
-                user: coordinator,
-                role: 'Coordinator'
-              })
-              .then(res => res.body.token)
-              .then(token => {
-                resolve({
-                  token,
-                  coordinator: coordinator_db,
-                  students: students_db
-                });
-              });
-          });
+    Promise
+      .all(prom)
+      .then(values => {
+        const coordinator_db = values[0];
+        const students_db = values[1];
+        const disciplines_db = values[2];
+        request(app)
+          .post('/auth/google')
+          .send({
+            user: coordinator,
+            role: 'Coordinator'
+          })
+          .then(res => res.body.token)
+          .then(token => {
+            resolve({
+              token,
+              coordinator: coordinator_db,
+              students: students_db,
+              disciplines: disciplines_db
+            })
+          })
       })
-      .catch(err => reject(err));
+      .catch(reject);
   });
 };
 
@@ -87,7 +116,7 @@ describe('Students', () => {
               const value = index == -1 ? 0 : 1;
               return prev + value;
             }, 0);
-            expect(validStudents).to.eql(students.length);
+            expect(validStudents).to.equal(students.length);
             done();
           });
       });
@@ -102,9 +131,9 @@ describe('Students', () => {
             .expect(200)
             .then(res => res.body)
             .then(student => {
-              expect(student.name).to.eql(populated.students[0].name);
-              expect(student.id).to.eql(populated.students[0]._id.toHexString());
-              expect(student.email).to.eql(populated.students[0].email);
+              expect(student.name).to.equal(populated.students[0].name);
+              expect(student.id).to.equal(populated.students[0]._id.toHexString());
+              expect(student.email).to.equal(populated.students[0].email);
               done();
             });
       });
@@ -131,9 +160,9 @@ describe('Students', () => {
               .expect(200)
               .then(res => res.body)
               .then(student => {
-                expect(student.name).to.eql(populated.students[0].name);
-                expect(student.id).to.eql(populated.students[0]._id.toHexString());
-                expect(student.email).to.eql(populated.students[0].email);
+                expect(student.name).to.equal(populated.students[0].name);
+                expect(student.id).to.equal(populated.students[0]._id.toHexString());
+                expect(student.email).to.equal(populated.students[0].email);
                 done();
               });
           });
@@ -159,6 +188,48 @@ describe('Students', () => {
               .get(`/students/${populated.students[0]._id}`)
               .set('x-auth', token)
               .expect(401)
+              .end(done);
+          });
+      });
+  });
+
+  test('Update disciplines', (done) => {
+    populateDB()
+      .then(populated => {
+        request(app)
+          .patch(`/students/${populated.students[0]._id}/disciplines`)
+          .send({
+            disciplines: [
+              populated.disciplines[0]._id.toHexString()
+            ]
+          })
+          .expect(200)
+          .then(() => {
+            request(app)
+              .get(`/students/${populated.students[0]._id}/disciplines`)
+              .expect(200)
+              .then(res => res.body)
+              .then((disciplines) => {
+                expect(disciplines.length).to.equal(1);
+                const db_discipline = _.pick(populated.disciplines[0], ['id', 'name', 'period', 'credits', 'curricularGrade', 'curricularType']);
+                expect(disciplines[0]).to.deep.equal(db_discipline);
+                done();
+              });
+          });
+      })
+  });
+
+  test('Update disciplines of inexistent student', (done) => {
+    populateDB()
+      .then(populated => {
+        request(app)
+          .delete(`/students/${populated.students[0]._id}`)
+          .set('x-auth', populated.token)
+          .expect(200)
+          .then(() => {
+            request(app)
+              .get(`/students/${populated.students[0]._id}/disciplines`)
+              .expect(404)
               .end(done);
           });
       });
