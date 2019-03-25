@@ -1,0 +1,43 @@
+{
+  "name": "spmb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "NODE_ENV=production node ./bin/www",
+    "dev": "NODE_ENV=development node ./bin/www",
+    "test": "NODE_ENV=test jest --detectOpenHandles --setupTestFrameworkScriptFile=./tests/setup.js --forceExit --runInBand --no-cache",
+    "coverage": "NODE_ENV=test jest --detectOpenHandles --setupTestFrameworkScriptFile=./tests/setup.js --coverage --forceExit --runInBand --no-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TurningSpringIntoNode/SPMb.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TurningSpringIntoNode/SPMb/issues"
+  },
+  "homepage": "https://github.com/TurningSpringIntoNode/SPMb#readme",
+  "dependencies": {
+    "compression": "^1.7.3",
+    "cors": "^2.8.4",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.3.1",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-google-token": "^0.1.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.7.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "expect.js": "^0.3.1",
+    "jest": "^23.6.0",
+    "supertest": "^3.3.0"
+  }
+}
